@@ -32,9 +32,7 @@ func justify(alignment, input, banner string) {
 		words = words[1:]
 	}
 
-	if alignment == "--align=center" {
-		drawArt(words, characters, 40)
-	}
+	
 }
 
 func drawArt(words []string, characters []string, numberOfSpaces int) {

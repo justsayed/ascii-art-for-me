@@ -7,44 +7,44 @@ import (
 )
 
 func fs(input, banner string) {
+
+}
+
+func loadBanner(banner string) ([]string, error) {
 	if banner != "standard" && banner != "shadow" && banner != "thinkertoy" {
-		fmt.Println("invalid banner:", banner)
-		return
+		return []string{}, fmt.Errorf("Invalid banner: %s", banner)
 	}
 	// read the data from the file.
 	file, err := os.ReadFile(banner + ".txt")
 	if err != nil {
-		fmt.Println("Invalid file to open:", err)
-		return
+		return []string{}, fmt.Errorf("Invalid file to open: %w", err)
 	}
 
 	// converting the data to split them
 	data := string(file)
 
 	characters := strings.Split(data, "\n")
-	characters = characters[:len(characters)-1]
+	return characters[:len(characters)-1], nil
+}
 
-	if len(input) < 1 {
-		return
+func renderWord(word string, characters []string) []string {
+	if len(word) < 1 {
+		return []string{}
 	}
 
-	words := strings.Split(input, "\\n")
-	if len(words[0]) < 1 {
-		words = words[1:]
-	}
-
-	for _, word := range words {
-		if word == "" {
-			fmt.Println()
+	words := strings.Split(word, "\\n")
+	var result []string
+	for _, w := range words {
+		if w == "" {
+			result = append(result, "")
 			continue
 		}
 		for row := 1; row < 9; row++ {
-			line := ""
-			for j := 0; j < len(word); j++ {
-				c := int(word[j])
-				line += characters[(c-32)*9+row]
+			line := renderWord(w, characters)
+			for _, arg := range line {
+				fmt.Println(arg)
 			}
-			fmt.Println(line)
 		}
 	}
+	return result
 }
