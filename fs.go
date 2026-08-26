@@ -29,12 +29,12 @@ func fs(input, banner string) {
 
 func loadBanner(banner string) ([]string, error) {
 	if banner != "standard" && banner != "shadow" && banner != "thinkertoy" {
-		return []string{}, fmt.Errorf("Invalid banner: %s", banner)
+		return []string{}, fmt.Errorf("invalid banner: %s", banner)
 	}
 	// read the data from the file.
 	file, err := os.ReadFile(banner + ".txt")
 	if err != nil {
-		return []string{}, fmt.Errorf("Invalid file to open: %w", err)
+		return []string{}, fmt.Errorf("invalid file to open: %w", err)
 	}
 
 	// converting the data to split them
