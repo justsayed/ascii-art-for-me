@@ -7,7 +7,24 @@ import (
 )
 
 func fs(input, banner string) {
-
+	characters, err := loadBanner(banner)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	words := strings.Split(input, "\\n")
+	if len(words[0]) < 1 {
+		words = words[1:]
+	}
+	for _, w := range words {
+		if w == "" {
+			fmt.Println()
+			continue
+		}
+		for _, line := range renderWord(w, characters) {
+			fmt.Println(line)
+		}
+	}
 }
 
 func loadBanner(banner string) ([]string, error) {
@@ -32,19 +49,15 @@ func renderWord(word string, characters []string) []string {
 		return []string{}
 	}
 
-	words := strings.Split(word, "\\n")
 	var result []string
-	for _, w := range words {
-		if w == "" {
-			result = append(result, "")
-			continue
+	for row := 1; row < 9; row++ {
+		line := ""
+		for i := 0; i < len(word); i++ {
+			c := int(word[i])
+			line += characters[(c-32)*9+row]
 		}
-		for row := 1; row < 9; row++ {
-			line := renderWord(w, characters)
-			for _, arg := range line {
-				fmt.Println(arg)
-			}
-		}
+		result = append(result, line)
 	}
+
 	return result
 }
