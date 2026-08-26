@@ -49,9 +49,9 @@ func applyAlignment(lines []string, alignment string, termWidth int) []string {
 		padding := 0
 		switch alignment {
 		case "--align=center":
-			padding = (termWidth - len(lines)) / 2
+			padding = (termWidth - len(line)) / 2
 		case "--align=right":
-			padding = (termWidth - len(lines))
+			padding = (termWidth - len(line))
 		}
 		lines[i] = strings.Repeat(" ", padding) + line
 	}
