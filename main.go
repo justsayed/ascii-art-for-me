@@ -20,7 +20,7 @@ func main() {
 			alignment := arg[0]
 			input := arg[1]
 			banner := arg[2]
-			justify(alignment, input, banner)
+			printAligned(alignment, input, banner)
 		}
 	}
 }

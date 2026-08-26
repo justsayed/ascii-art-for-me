@@ -2,53 +2,59 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strings"
 )
 
-func justify(alignment, input, banner string) {
-	if banner != "standard" && banner != "shadow" && banner != "thinkertoy" {
-		fmt.Println("invalid banner:", banner)
+func printAligned(alignment, input, banner string) {
+	validAlignments := map[string]bool{
+		"--align=center":  true,
+		"--align=left":    true,
+		"--align=right":   true,
+		"--align=justify": true,
+	}
+
+	if !validAlignments[alignment] {
+		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]")
 		return
 	}
-	file, err := os.ReadFile(banner + ".txt")
+
+	characters, err := loadBanner(banner)
 	if err != nil {
-		fmt.Println("Invalid file to open:", err)
+		fmt.Println(err)
 		return
 	}
 
-	// converting the data to split them
-	data := string(file)
-
-	characters := strings.Split(data, "\n")
-	characters = characters[:len(characters)-1]
-
-	if len(input) < 1 {
-		return
-	}
+	termWidth := getTerminalWidth()
 
 	words := strings.Split(input, "\\n")
 	if len(words[0]) < 1 {
 		words = words[1:]
 	}
 
-	
-}
-
-func drawArt(words []string, characters []string, numberOfSpaces int) {
-	for _, word := range words {
-		if word == "" {
+	for _, w := range words {
+		if w == "" {
 			fmt.Println()
 			continue
 		}
-		for row := 1; row < 9; row++ {
-			line := ""
-			for j := 0; j < len(word); j++ {
-				c := int(word[j])
-				line += characters[(c-32)*9+row]
-			}
-			fmt.Print(strings.Repeat(" ", numberOfSpaces))
+		lines := renderWord(w, characters)
+		lines = applyAlignment(lines, alignment, termWidth)
+		for _, line := range lines {
 			fmt.Println(line)
 		}
 	}
+}
+
+func applyAlignment(lines []string, alignment string, termWidth int) []string {
+	for i, line := range lines {
+		padding := 0
+		switch alignment {
+		case "--align=center":
+			padding = (termWidth - len(lines)) / 2
+		case "--align=right":
+			padding = (termWidth - len(lines))
+		}
+		lines[i] = strings.Repeat(" ", padding) + line
+	}
+
+	return lines
 }
